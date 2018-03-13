@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+        <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        <!-- 为这个mapper指定一个唯一的namespace，namespace的值习惯上设置成包名+sql映射文件名，这样就能够保证namespace的值是唯一的
+        例如namespace="me.gacl.mapping.userMapper"就是me.gacl.mapping(包名)+userMapper(userMapper.xml文件去除后缀)
+         -->
+<mapper namespace="com.yangmz.app.model.ArticleMapper">
+
+    <resultMap id="ArticleUserMap" type="com.yangmz.app.model.Article">
+        <id property="id" column="id" />
+        <result property="userId" column="userId" />
+        <result property="title" column="title" />
+        <result property="text" column="text" />
+        <result property="likeNum" column="likeNum" />
+        <result property="viewNum" column="viewNum" />
+        <result property="commentNum" column="commentNum" />
+        <result property="createTime" column="createTime" />
+
+        <association property="user" javaType="com.yangmz.base.model.User">
+            <id property="id" column="userId"/>
+            <result property="name" column="userName"/>
+            <result property="portraitAddress" column="userPortraitAddress"/>
+        </association>
+    </resultMap>
+
+    <insert id="createArticle" useGeneratedKeys="true" keyProperty="id" parameterType="com.yangmz.app.model.Article">
+        INSERT INTO articles (
+          userId, title, text, viewNum, likeNum, commentNum,createTime, updateTime)
+        VALUES ( #{userId},  #{title}, #{text}, #{viewNum}, #{likeNum}, #{commentNum}, #{createTime}, #{updateTime})
+    </insert>
+
+    <select id="getArticleById" resultMap="ArticleUserMap" parameterType="Long">
+        SELECT articles.id, userId, title, text, articles.createTime,
+               viewNum, likeNum, commentNum,
+               users.name as userName, users.portraitAddress as userPortraitAddress
+        FROM articles
+        INNER JOIN users
+        ON articles.userId = users.id
+        WHERE articles.id = #{id}
+    </select>
+
+    <select id="getArticleList" resultType="com.yangmz.app.model.Article" parameterType="Map">
+        SELECT articles.id, userId, title, text, articles.createTime,
+        viewNum, likeNum, commentNum
+        FROM articles
+        <if test='order != null and order == "time" '>
+            ORDER BY createTime
+        </if>
+        <if test='order != null and order == "like" '>
+            ORDER BY viewNum
+        </if>
+        LIMIT #{startNum}, #{itemNum}
+    </select>
+
+    <delete id="deleteArticleById" parameterType="Long">
+        DELETE FROM articles
+        WHERE articles.id = #{id}
+    </delete>
+
+    <update id="increaseViewNum" parameterType="Long">
+        UPDATE articles
+        SET viewNum = viewNum + 1
+        WHERE articles.id = #{id}
+    </update>
+
+    <update id="increaseCommentNum" parameterType="Long">
+        UPDATE articles
+        SET commentNum = commentNum + 1
+        WHERE articles.id = #{id}
+    </update>
+
+    <update id="increaseLikeNum" parameterType="Long">
+        UPDATE articles
+        SET likeNum = likeNum + 1
+        WHERE articles.id = #{id}
+    </update>
+
+    <update id="decreaseLikeNum" parameterType="Map">
+        UPDATE articles
+        SET likeNum = likeNum - #{num}
+        WHERE articles.id = #{id}
+    </update>
+
+</mapper>

@@ -1,0 +1,1281 @@
+swagger: '2.0'
+info:
+  description: >-
+    This is a sample server Petstore server.  You can find out more about    
+    Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net,
+    #swagger](http://swagger.io/irc/).      For this sample, you can use the api
+    key `special-key` to test the authorization     filters.
+  version: 1.0.0
+  title: Swagger Petstore
+  termsOfService: 'http://swagger.io/terms/'
+  contact:
+    email: apiteam@swagger.io
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+host: www.yangmz.com
+basePath: /
+tags:
+  - name: sso
+    description: Single Sign On 单点登陆
+  - name: user
+    description: Operations about user 用户操作
+  - name: app user
+    description: app app API
+  - name: app article
+    description: app app API
+  - name: store
+    description: Access to Petstore orders
+schemes:
+  - http
+paths:
+  /sso/setVerifyByEmail:
+    post:
+      tags:
+        - sso
+      summary: 给Email发送验证码
+      description: ''
+      operationId: setVerifyByEmail
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: email
+          in: query
+          description: Email of user
+          required: true
+          type: string
+      responses:
+        '405':
+          description: Invalid input
+  /sso/loginByEmail:
+    post:
+      tags:
+        - sso
+      summary: 使用验证码/密码登陆
+      description: ''
+      operationId: loginByEmail
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: email
+          in: query
+          description: Email of user
+          required: true
+          type: string
+        - name: code
+          in: query
+          description: VerifyCode or Password
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/LoginUser'
+        '405':
+          description: Invalid input
+  /sso/loginByToken:
+    post:
+      tags:
+        - sso
+      summary: 使用token登陆
+      description: ''
+      operationId: verdifyUser
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: userId
+          in: query
+          description: ID of user
+          required: true
+          type: string
+        - name: token
+          in: query
+          description: token or user
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/LoginUser'
+        '405':
+          description: Invalid input
+  /sso/checkToken:
+    post:
+      tags:
+        - sso
+      summary: 验证token合法性 内部使用
+      description: ''
+      operationId: checkToken
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: userId
+          in: query
+          description: ID of user
+          required: true
+          type: string
+        - name: token
+          in: query
+          description: token or user
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/UserToken'
+        '405':
+          description: Invalid input
+  /user/uploadPortrait:
+    post:
+      tags:
+        - user
+      summary: 上传头像
+      description: ''
+      operationId: uploadPortrait
+      consumes:
+        - application/json
+        - multipart/form-data
+      produces:
+        - application/json
+      parameters:
+        - name: userId
+          in: query
+          description: ID of user
+          required: true
+          type: string
+        - name: token
+          in: query
+          description: token or user
+          required: true
+          type: string
+        - name: file
+          in: formData
+          type: file
+          description: The file to upload.
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/UserToken'
+        '405':
+          description: Invalid input
+  /user/updatePassword:
+    post:
+      tags:
+        - user
+      summary: 更新密码
+      description: ''
+      operationId: user updatePassword
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: userId
+          in: query
+          description: ID of user
+          required: true
+          type: string
+        - name: token
+          in: query
+          description: token or user
+          required: true
+          type: string
+        - name: oldPassword
+          in: query
+          description: oldPassword
+          required: true
+          type: string
+        - name: newPassword
+          in: query
+          description: newPassword
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/UserToken'
+        '405':
+          description: Invalid input
+  /user/updateDetail:
+    post:
+      tags:
+        - user
+      summary: '上传详细信息:微信、微博、淘宝'
+      description: ''
+      operationId: user updateDetail
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: userId
+          in: query
+          description: ID of user
+          required: true
+          type: string
+        - name: token
+          in: query
+          description: token or user
+          required: true
+          type: string
+        - name: type
+          in: query
+          description: wechat|taobao|weibo
+          required: true
+          type: string
+        - name: detail
+          in: query
+          description: account
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/UserToken'
+        '405':
+          description: Invalid input
+  /user/changeDetailValid:
+    post:
+      tags:
+        - user
+      summary: '上传详细信息:微信、微博、淘宝'
+      description: ''
+      operationId: user description
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: userId
+          in: query
+          description: ID of user
+          required: true
+          type: string
+        - name: token
+          in: query
+          description: token or user
+          required: true
+          type: string
+        - name: type
+          in: query
+          description: wechat|taobao|weibo
+          required: true
+          type: string
+        - name: isValid
+          in: query
+          description: true | false
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/UserToken'
+        '405':
+          description: Invalid input
+  '/user/{userId}':
+    get:
+      tags:
+        - user
+      summary: 获取用户信息
+      description: ''
+      operationId: getUser
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: userId
+          in: path
+          description: 用户ID
+          required: true
+          type: number
+      responses:
+        '405':
+          description: Invalid input
+      security:
+        - petstore_auth:
+            - 'write:pets'
+            - 'read:pets'
+  /user/list:
+    get:
+      tags:
+        - user
+      summary: 获取用户列表 内部使用
+      description: ''
+      operationId: get user list
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: userIdList
+          in: query
+          description: 用户ID List 用|分割
+          required: true
+          type: string
+      responses:
+        '405':
+          description: Invalid input
+      security:
+        - petstore_auth:
+            - 'write:pets'
+            - 'read:pets'
+  '/user/popular/{page}':
+    get:
+      tags:
+        - user
+      summary: 获取最受欢迎用户列表
+      description: ''
+      operationId: get popular User
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: page
+          in: path
+          description: 用户ID
+          required: true
+          type: number
+      responses:
+        '405':
+          description: Invalid input
+      security:
+        - petstore_auth:
+            - 'write:pets'
+            - 'read:pets'
+  '/user/follow/{userId}':
+    get:
+      tags:
+        - user
+      summary: 订阅用户
+      description: ''
+      operationId: follow User
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: loginUserId
+          in: query
+          description: 登陆用户
+          required: true
+          type: number
+        - name: token
+          in: query
+          description: 用户token
+          required: true
+          type: number
+        - name: userId
+          in: path
+          description: 目标用户
+          required: true
+          type: number
+      responses:
+        '405':
+          description: Invalid input
+      security:
+        - petstore_auth:
+            - 'write:pets'
+            - 'read:pets'
+  '/user/myFollow/{page}':
+    get:
+      tags:
+        - user
+      summary: 获取订阅的用户列表
+      description: ''
+      operationId: get following User
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: loginUserId
+          in: query
+          description: 登陆用户
+          required: true
+          type: number
+        - name: token
+          in: query
+          description: 用户token
+          required: true
+          type: number
+        - name: page
+          in: path
+          description: 分页
+          required: true
+          type: number
+      responses:
+        '405':
+          description: Invalid input
+      security:
+        - petstore_auth:
+            - 'write:pets'
+            - 'read:pets'
+  '/app/getArticle/comment/{id}/page/{page}':
+    get:
+      tags:
+        - app article
+      summary: 文章
+      description: ''
+      operationId: app getArticle comment
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: ID of user
+          required: true
+          type: string
+        - name: page
+          in: path
+          description: page of comment
+          required: true
+          type: string
+      responses:
+        '200':
+          description: get comment successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/CommentList'
+        '405':
+          description: Invalid input
+  '/app/getArticle/like/{id}':
+    post:
+      tags:
+        - app article
+      summary: 文章
+      description: ''
+      operationId: app getArticle like
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: ID of user
+          required: true
+          type: string
+        - name: userId
+          in: query
+          required: true
+          type: string
+        - name: token
+          in: query
+          required: true
+          type: string
+      responses:
+        '200':
+          description: get like successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/BoolResult'
+        '405':
+          description: Invalid input
+  '/app/getArticle/{id}':
+    get:
+      tags:
+        - app article
+      summary: 文章
+      description: ''
+      operationId: app getArticle
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: ID of user
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Article'
+        '405':
+          description: Invalid input
+  '/app/getArticleList/page/{page}/order/{order}':
+    get:
+      tags:
+        - app article
+      summary: 文章
+      description: ''
+      operationId: app getArticleList
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: page
+          in: path
+          description: num of page
+          required: true
+          type: string
+        - name: order
+          in: path
+          description: order type time/like
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ArticleList'
+        '405':
+          description: Invalid input
+  /app/uploadArticle/image:
+    post:
+      tags:
+        - app article
+      summary: 上传图片
+      description: ''
+      operationId: uploadImage
+      consumes:
+        - application/json
+        - multipart/form-data
+      produces:
+        - application/json
+      parameters:
+        - name: userId
+          in: query
+          description: ID of user
+          required: true
+          type: string
+        - name: token
+          in: query
+          description: token or user
+          required: true
+          type: string
+        - name: index
+          in: formData
+          type: string
+          description: The file index.
+        - name: file
+          in: formData
+          type: file
+          description: The file to upload.
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/UserToken'
+        '405':
+          description: Invalid input
+  /app/uploadArticle/text:
+    post:
+      tags:
+        - app article
+      summary: 文章
+      description: ''
+      operationId: app updateArticle
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: userId
+          in: query
+          description: ID of user
+          required: true
+          type: string
+        - name: token
+          in: query
+          description: token or user
+          required: true
+          type: string
+        - name: article
+          in: query
+          description: article
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/UserToken'
+        '405':
+          description: Invalid input
+  /app/uploadArticle/comment:
+    post:
+      tags:
+        - app article
+      summary: 文章
+      description: ''
+      operationId: app uploadArticleComment
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: userId
+          in: query
+          description: ID of user
+          required: true
+          type: string
+        - name: token
+          in: query
+          description: token or user
+          required: true
+          type: string
+        - name: articleId
+          in: query
+          description: articleId
+          required: true
+          type: string
+        - name: comment
+          in: query
+          description: comment
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/UserToken'
+        '405':
+          description: Invalid input
+  /app/uploadArticle/like:
+    post:
+      tags:
+        - app article
+      summary: 文章
+      description: ''
+      operationId: app upload article like
+      parameters:
+        - name: userId
+          in: query
+          description: ID of user
+          required: true
+          type: string
+        - name: token
+          in: query
+          description: token or user
+          required: true
+          type: string
+        - name: articleId
+          in: query
+          description: articleId
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/UserToken'
+        '405':
+          description: Invalid input
+  /pet/findByStatus:
+    get:
+      tags:
+        - pet
+      summary: Finds Pets by status
+      description: Multiple status values can be provided with comma separated strings
+      operationId: findPetsByStatus
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - name: status
+          in: query
+          description: Status values that need to be considered for filter
+          required: true
+          type: array
+          items:
+            type: string
+            enum:
+              - available
+              - pending
+              - sold
+            default: available
+          collectionFormat: multi
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Pet'
+        '400':
+          description: Invalid status value
+      security:
+        - petstore_auth:
+            - 'write:pets'
+            - 'read:pets'
+  /pet/findByTags:
+    get:
+      tags:
+        - pet
+      summary: Finds Pets by tags
+      description: >-
+        Muliple tags can be provided with comma separated strings. Use        
+        tag1, tag2, tag3 for testing.
+      operationId: findPetsByTags
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - name: tags
+          in: query
+          description: Tags to filter by
+          required: true
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Pet'
+        '400':
+          description: Invalid tag value
+      security:
+        - petstore_auth:
+            - 'write:pets'
+            - 'read:pets'
+      deprecated: true
+  '/pet/{petId}':
+    get:
+      tags:
+        - pet
+      summary: Find pet by ID
+      description: Returns a single pet
+      operationId: getPetById
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - name: petId
+          in: path
+          description: ID of pet to return
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Pet'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Pet not found
+      security:
+        - api_key: []
+    post:
+      tags:
+        - pet
+      summary: Updates a pet in the store with form data
+      description: ''
+      operationId: updatePetWithForm
+      consumes:
+        - application/x-www-form-urlencoded
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - name: petId
+          in: path
+          description: ID of pet that needs to be updated
+          required: true
+          type: integer
+          format: int64
+        - name: name
+          in: formData
+          description: Updated name of the pet
+          required: false
+          type: string
+        - name: status
+          in: formData
+          description: Updated status of the pet
+          required: false
+          type: string
+      responses:
+        '405':
+          description: Invalid input
+      security:
+        - petstore_auth:
+            - 'write:pets'
+            - 'read:pets'
+    delete:
+      tags:
+        - pet
+      summary: Deletes a pet
+      description: ''
+      operationId: deletePet
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - name: api_key
+          in: header
+          required: false
+          type: string
+        - name: petId
+          in: path
+          description: Pet id to delete
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Pet not found
+      security:
+        - petstore_auth:
+            - 'write:pets'
+            - 'read:pets'
+  '/pet/{petId}/uploadImage':
+    post:
+      tags:
+        - pet
+      summary: uploads an image
+      description: ''
+      operationId: uploadFile
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+      parameters:
+        - name: petId
+          in: path
+          description: ID of pet to update
+          required: true
+          type: integer
+          format: int64
+        - name: additionalMetadata
+          in: formData
+          description: Additional data to pass to server
+          required: false
+          type: string
+        - name: file
+          in: formData
+          description: file to upload
+          required: false
+          type: file
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/ApiResponse'
+      security:
+        - petstore_auth:
+            - 'write:pets'
+            - 'read:pets'
+  /store/inventory:
+    get:
+      tags:
+        - store
+      summary: Returns pet inventories by status
+      description: Returns a map of status codes to quantities
+      operationId: getInventory
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: object
+            additionalProperties:
+              type: integer
+              format: int32
+      security:
+        - api_key: []
+  /store/order:
+    post:
+      tags:
+        - store
+      summary: Place an order for a pet
+      description: ''
+      operationId: placeOrder
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: order placed for purchasing the pet
+          required: true
+          schema:
+            $ref: '#/definitions/Order'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Order'
+        '400':
+          description: Invalid Order
+  '/store/order/{orderId}':
+    get:
+      tags:
+        - store
+      summary: Find purchase order by ID
+      description: >-
+        For valid response try integer IDs with value >= 1 and <= 10.        
+        Other values will generated exceptions
+      operationId: getOrderById
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - name: orderId
+          in: path
+          description: ID of pet that needs to be fetched
+          required: true
+          type: integer
+          maximum: 10
+          minimum: 1
+          format: int64
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Order'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Order not found
+    delete:
+      tags:
+        - store
+      summary: Delete purchase order by ID
+      description: >-
+        For valid response try integer IDs with positive integer value.        
+        Negative or non-integer values will generate API errors
+      operationId: deleteOrder
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - name: orderId
+          in: path
+          description: ID of the order that needs to be deleted
+          required: true
+          type: integer
+          minimum: 1
+          format: int64
+      responses:
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Order not found
+securityDefinitions:
+  petstore_auth:
+    type: oauth2
+    authorizationUrl: 'http://petstore.swagger.io/oauth/dialog'
+    flow: implicit
+    scopes:
+      'write:pets': modify pets in your account
+      'read:pets': read your pets
+  api_key:
+    type: apiKey
+    name: api_key
+    in: header
+definitions:
+  BoolResult:
+    type: object
+    properties:
+      result:
+        type: string
+      info:
+        type: string
+  BriefUser:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      name:
+        type: string
+      portraitAddress:
+        type: string
+  Comment:
+    type: object
+    properties:
+      user:
+        $ref: '#/definitions/BriefUser'
+      comment:
+        type: string
+      createTime:
+        type: string
+  CommentList:
+    type: object
+    properties:
+      numOfComment:
+        type: string
+      commentList:
+        type: array
+        items:
+          $ref: '#/definitions/Comment'
+    xml:
+      name: CommentList
+  UserToken:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      userName:
+        type: string
+      userPicAddress:
+        type: string
+      token:
+        type: string
+    xml:
+      name: UserToken
+  ArticleItem:
+    type: object
+    properties:
+      imageId:
+        type: integer
+        format: int64
+      imageAddress:
+        type: string
+      text:
+        type: string
+  Article:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      userId:
+        type: integer
+      userName:
+        type: string
+      userPortraitAddress:
+        type: string
+      title:
+        type: string
+      viewNum:
+        type: integer
+      likeNum:
+        type: integer
+      commentNum:
+        type: integer
+      itemList:
+        type: array
+        items:
+          $ref: '#/definitions/ArticleItem'
+      numOfItem:
+        type: integer
+    xml:
+      name: ArticleList
+  ArticleListItem:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      userId:
+        type: integer
+        format: int64
+      user:
+        $ref: '#/definitions/BriefUser'
+      title:
+        type: string
+      headImageAddress:
+        type: string
+      viewNum:
+        type: integer
+        format: int64
+      likeNum:
+        type: integer
+        format: int64
+      commentNum:
+        type: integer
+        format: int64
+      createTime:
+        type: integer
+        format: int64
+  ArticleList:
+    type: object
+    properties:
+      numOfArticle:
+        type: integer
+        format: int64
+      articleList:
+        type: array
+        items:
+          $ref: '#/definitions/ArticleListItem'
+    xml:
+      name: ArticleList
+  Order:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      petId:
+        type: integer
+        format: int64
+      quantity:
+        type: integer
+        format: int32
+      shipDate:
+        type: string
+        format: date-time
+      status:
+        type: string
+        description: Order Status
+        enum:
+          - placed
+          - approved
+          - delivered
+      complete:
+        type: boolean
+        default: false
+    xml:
+      name: Order
+  Category:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      name:
+        type: string
+    xml:
+      name: Category
+  Tag:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      name:
+        type: string
+    xml:
+      name: Tag
+  LoginUser:
+    type: object
+    required:
+      - id
+    properties:
+      id:
+        type: integer
+        format: int64
+      name:
+        type: string
+        example: doudou
+      token:
+        type: string
+        example: 345gf354tgghf546
+      portraitAddress:
+        type: string
+        example: /image/portrait/0/portrait_1516806223014_1.jpg
+      wechatDetailValid:
+        type: integer
+        format: int64
+      weiboDetailValid:
+        type: integer
+        format: int64
+      taobaoDetailValid:
+        type: integer
+        format: int64
+      wechatDetail:
+        type: string
+      weiboDetail:
+        type: string
+      taobaoDetail:
+        type: string
+    xml:
+      name: Tag
+  Pet:
+    type: object
+    required:
+      - name
+      - photoUrls
+    properties:
+      id:
+        type: integer
+        format: int64
+      category:
+        $ref: '#/definitions/Category'
+      name:
+        type: string
+        example: doggie
+      photoUrls:
+        type: array
+        xml:
+          name: photoUrl
+          wrapped: true
+        items:
+          type: string
+      tags:
+        type: array
+        xml:
+          name: tag
+          wrapped: true
+        items:
+          $ref: '#/definitions/Tag'
+      status:
+        type: string
+        description: pet status in the store
+        enum:
+          - available
+          - pending
+          - sold
+    xml:
+      name: Pet
+  ApiResponse:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      type:
+        type: string
+      message:
+        type: string
+externalDocs:
+  description: Find out more about Swagger
+  url: 'http://swagger.io'

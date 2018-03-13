@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <mvc:annotation-driven />
+    <mvc:default-servlet-handler/>
+    <context:annotation-config/>
+
+    <context:component-scan base-package="com.yangmz.user.base" />
+    <context:component-scan base-package="com.yangmz.user.model" />
+    <context:component-scan base-package="com.yangmz.user.dao" />
+    <context:component-scan base-package="com.yangmz.user.controller" />
+    <context:component-scan base-package="com.yangmz.user.interceptor" />
+
+    <bean id="imageDao" class="com.yangmz.base.dao.ImageDao">
+    </bean>
+
+    <bean id="emailProperty" class="com.yangmz.base.property.EmailProperty">
+        <constructor-arg value="/conf/email.properties"/>
+    </bean>
+
+    <bean id="emailServer" class="com.yangmz.base.service.EmailService">
+        <constructor-arg ref="emailProperty"/>
+    </bean>
+
+    <bean id="mybatisClient" class="com.yangmz.base.client.MybatisClient">
+        <constructor-arg value="/conf/mybatis-config.xml"/>
+    </bean>
+    <bean id="jedisFactory" class="com.yangmz.base.client.Jedis.JedisFactory">
+        <constructor-arg name="type" value="single"/>
+        <constructor-arg name="configPath" value="/conf/redis.properties"/>
+    </bean>
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/updateUserName"/>
+            <mvc:mapping path="/uploadPortrait"/>
+            <mvc:mapping path="/updatePassword"/>
+            <mvc:mapping path="/sendResetVerifyCode"/>
+            <mvc:mapping path="/resetPassword"/>
+            <mvc:mapping path="/updateDetail"/>
+            <mvc:mapping path="/changeDetailValid"/>
+            <!--<mvc:mapping path="/read-header"/>-->
+            <bean class="com.yangmz.user.interceptor.AuthUser">
+                <constructor-arg ref="userDao">
+                </constructor-arg>
+            </bean>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+</beans>

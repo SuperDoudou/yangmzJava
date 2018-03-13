@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yangmz.app.model.ArticleLikeMapper">
+    <insert id="createArticleLike" useGeneratedKeys="true" keyProperty="id" parameterType="com.yangmz.app.model.ArticleLike">
+        INSERT INTO articleLikes (
+          userId, articleId, valid, createTime, updateTime)
+        VALUES ( #{userId},  #{articleId}, 1,
+         #{createTime}, #{updateTime})
+    </insert>
+
+    <update id="updateArticleLike" parameterType="Map">
+        UPDATE articleLikes
+        SET valid = #{valid}
+        WHERE articleId = #{articleId} AND
+            userId = #{userId}
+    </update>
+
+
+    <select id="getArticleLike" resultType="com.yangmz.app.model.ArticleLike" parameterType="Map">
+        SELECT id, valid from articleLikes
+        WHERE articleId = #{articleId} AND
+            userId = #{userId}
+        LIMIT 1
+    </select>
+
+    <select id="getArticleLikeList" resultType="com.yangmz.app.model.ArticleLike" parameterType="Map">
+        SELECT id, valid from articleLikes
+        WHERE articleId = #{articleId} AND
+        userId = #{userId}
+    </select>
+
+    <delete id="removeExtraArticleLike" parameterType="List">
+        DELETE FROM articleLikes
+        WHERE id IN
+        <foreach collection="list" index="index" item="item"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+</mapper>

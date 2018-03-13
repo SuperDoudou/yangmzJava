@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+        <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        <!-- 为这个mapper指定一个唯一的namespace，namespace的值习惯上设置成包名+sql映射文件名，这样就能够保证namespace的值是唯一的
+        例如namespace="me.gacl.mapping.userMapper"就是me.gacl.mapping(包名)+userMapper(userMapper.xml文件去除后缀)
+         -->
+<mapper namespace="com.yangmz.app.model.ArticleImageMapper">
+<!-- 在select标签中编写查询的SQL语句， 设置select标签的id属性为getUser，id属性值必须是唯一的，不能够重复
+使用parameterType属性指明查询时使用的参数类型，resultType属性指明查询返回的结果集类型
+resultType="me.gacl.domain.User"就表示将查询结果封装成一个User类的对象返回
+User类就是users表所对应的实体类
+-->
+<!--
+    根据id查询得到一个user对象
+ -->
+    <insert id="createArticleImage" useGeneratedKeys="true" keyProperty="id" parameterType="com.yangmz.app.model.ArticleImage">
+        INSERT INTO articleImages (
+          userId, address, isCache, isHead, width, height, createTime, updateTime)
+        VALUES ( #{userId},  #{address}, #{isCache},0, #{width}, #{height},
+         #{createTime}, #{updateTime})
+    </insert>
+
+    <select id="getArticleImageById" resultType="com.yangmz.app.model.ArticleImage" parameterType="Long">
+        SELECT id,address,userId,articleId FROM articleImages
+        WHERE id = #{id}
+    </select>
+
+    <select id="getArticleImageByArticleId" resultType="com.yangmz.app.model.ArticleImage" parameterType="Long">
+        SELECT id,userId,articleId,address FROM articleImages
+        WHERE articleId = #{articleId}
+    </select>
+
+    <select id="getHeadImageByArticleId" resultType="com.yangmz.app.model.ArticleImage" parameterType="List">
+        SELECT id,userId,articleId,address FROM articleImages
+        WHERE isHead = 1 AND articleId IN
+        <foreach item="articleId" index="index" collection="list"
+                 open="(" separator="," close=")">
+            #{articleId}
+        </foreach>
+    </select>
+
+    <update id="updateImageToArticle" parameterType="Map">
+        UPDATE articleImages
+        SET articleId = #{articleId} , address = #{address} , isCache = 0
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateImageToHead" parameterType="Long">
+        UPDATE articleImages
+        SET isHead = 1
+        WHERE id = #{id}
+    </update>
+</mapper>
